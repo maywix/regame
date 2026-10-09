@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RE:GAME — Organisation du projet</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🩸</text></svg>">
+<style>
+:root{
+  --bg:#0a0a0c; --bg2:#111114; --panel:#15151a; --panel2:#1b1b22;
+  --border:#2a2a33; --red:#b4142b; --red2:#7a0e1e; --redglow:#ff2d4d;
+  --text:#e4e4e8; --muted:#8a8a96; --accent:#c9a04e;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{
+  background: radial-gradient(ellipse at top, #16070a 0%, var(--bg) 55%);
+  color: var(--text); font-family: var(--font); min-height:100vh;
+  background-attachment: fixed;
+}
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.05;
+  background-image: repeating-linear-gradient(0deg, #000 0, transparent 1px, transparent 2px);
+}
+a{color:inherit}
+.noise-title{
+  font-family: 'Georgia', serif; letter-spacing: 3px; text-transform:uppercase;
+}
+/* ---- Layout ---- */
+header.top{
+  position: sticky; top:0; z-index:50;
+  background: linear-gradient(180deg, rgba(10,10,12,.97), rgba(10,10,12,.88));
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(6px);
+}
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  max-width:1280px; margin:0 auto; padding: 14px 24px;
+}
+.brand{display:flex; align-items:center; gap:12px;}
+.brand .logo{
+  font-size:28px; filter: drop-shadow(0 0 8px var(--red));
+}
+.brand h1{
+  font-size:22px; color:#fff;
+  text-shadow: 0 0 12px rgba(180,20,43,.6), 0 0 2px #000;
+}
+.brand small{display:block; color:var(--muted); font-size:11px; letter-spacing:2px; margin-top:-2px;}
+nav.tabs{
+  display:flex; gap:4px; max-width:1280px; margin:0 auto; padding: 0 24px 0;
+  overflow-x:auto; border-top:1px solid var(--border);
+}
+nav.tabs button{
+  background:none; border:none; color:var(--muted); padding:12px 18px; font-size:14px;
+  cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap;
+  font-weight:600; letter-spacing:.3px; transition: all .15s;
+}
+nav.tabs button:hover{color:#fff;}
+nav.tabs button.active{color:#fff; border-bottom-color: var(--red); text-shadow:0 0 8px rgba(180,20,43,.5);}
+
+main{max-width:1280px; margin:0 auto; padding: 28px 24px 80px; position:relative; z-index:1;}
+.view{display:none; animation: fadeIn .25s ease;}
+.view.active{display:block;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+
+.view-head{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; margin-bottom:22px; flex-wrap:wrap;}
+.view-head h2{font-size:26px; color:#fff;}
+.view-head p{color:var(--muted); font-size:14px; margin-top:4px; max-width:640px;}
+.btn{
+  background: linear-gradient(180deg, var(--red), var(--red2)); color:#fff; border:none;
+  padding: 10px 18px; border-radius:6px; font-weight:700; cursor:pointer; font-size:13px;
+  box-shadow: 0 2px 10px rgba(180,20,43,.35); transition: transform .12s, box-shadow .12s;
+  letter-spacing:.4px;
+}
+.btn:hover{transform: translateY(-1px); box-shadow:0 4px 16px rgba(180,20,43,.5);}
+.btn.ghost{background:transparent; border:1px solid var(--border); color:var(--text); box-shadow:none;}
+.btn.ghost:hover{border-color:var(--red); color:#fff;}
+.btn.small{padding:6px 10px; font-size:12px;}
+.btn.danger{background:linear-gradient(180deg,#3a3a3a,#222);}
+
+/* Dashboard stats */
+.stats-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:14px; margin-bottom:28px;}
+.stat-card{
+  background: var(--panel); border:1px solid var(--border); border-radius:10px; padding:18px;
+  position:relative; overflow:hidden;
+}
+.stat-card::after{content:""; position:absolute; top:0; right:0; width:60px; height:60px; background:var(--red); filter:blur(40px); opacity:.25;}
+.stat-card .num{font-size:34px; font-weight:800; color:#fff;}
+.stat-card .lbl{color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:1px; margin-top:4px;}
+
+.panel{background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:20px; margin-bottom:20px;}
+.panel h3{font-size:16px; color:#fff; margin-bottom:12px; display:flex; align-items:center; gap:8px;}
+
+/* grid of cards */
+.cards-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px;}
+.card{
+  background: var(--panel2); border:1px solid var(--border); border-radius:10px; padding:16px;
+  position:relative; transition: border-color .15s, transform .15s;
+}
+.card:hover{border-color: var(--red); transform: translateY(-2px);}
+.card .tag{
+  display:inline-block; background: rgba(180,20,43,.15); color:var(--redglow); border:1px solid rgba(180,20,43,.4);
+  font-size:10px; text-transform:uppercase; letter-spacing:1px; padding:2px 8px; border-radius:20px; margin-bottom:8px;
+}
+.card h4{font-size:16px; color:#fff; margin-bottom:6px;}
+.card p{font-size:13px; color:var(--muted); line-height:1.5; white-space:pre-wrap;}
+.card .meta{display:flex; justify-content:space-between; align-items:center; margin-top:12px; font-size:11px; color:#5e5e68;}
+.card .actions{position:absolute; top:12px; right:12px; display:flex; gap:6px; opacity:0; transition:opacity .15s;}
+.card:hover .actions{opacity:1;}
+.icon-btn{background:rgba(255,255,255,.06); border:1px solid var(--border); color:var(--muted); width:26px; height:26px; border-radius:6px; cursor:pointer; font-size:12px; display:flex; align-items:center; justify-content:center;}
+.icon-btn:hover{color:#fff; border-color:var(--red);}
+.empty-state{color:var(--muted); font-size:13px; padding:30px; text-align:center; border:1px dashed var(--border); border-radius:10px;}
+
+.badge-row{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;}
+.badge{font-size:10px; padding:2px 7px; border-radius:20px; background:#2a2a33; color:var(--text); border:1px solid var(--border);}
+.badge.diff-facile{background:rgba(72,170,96,.15); color:#6fd98a; border-color:rgba(72,170,96,.4);}
+.badge.diff-moyen{background:rgba(201,160,78,.15); color:var(--accent); border-color:rgba(201,160,78,.4);}
+.badge.diff-dur{background:rgba(180,20,43,.15); color:var(--redglow); border-color:rgba(180,20,43,.4);}
+
+/* Kanban */
+.kanban{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+.kanban-col{background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:14px; min-height:200px;}
+.kanban-col h4{font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:12px; display:flex; justify-content:space-between;}
+.kanban-col h4 span.count{background:var(--border); color:var(--text); border-radius:20px; padding:1px 8px; font-size:11px;}
+.kcard{background:var(--panel2); border:1px solid var(--border); border-left:3px solid var(--red); border-radius:6px; padding:10px 12px; margin-bottom:10px; font-size:13px;}
+.kcard .kactions{display:flex; gap:6px; margin-top:8px;}
+.kcard select{background:var(--bg2); color:var(--text); border:1px solid var(--border); border-radius:4px; font-size:11px; padding:2px 4px;}
+
+/* Team / profs */
+.prof-card{display:flex; gap:14px;}
+.prof-avatar{
+  width:52px; height:52px; border-radius:50%; background: linear-gradient(135deg, var(--red), #3a0c15);
+  display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; font-size:18px; flex-shrink:0;
+  box-shadow: 0 0 0 2px var(--border);
+}
+.school-banner{
+  background: linear-gradient(120deg, rgba(180,20,43,.12), rgba(201,160,78,.08));
+  border:1px solid var(--border); border-radius:12px; padding:22px 26px; margin-bottom:24px;
+  display:flex; align-items:center; gap:18px;
+}
+.school-banner .emblem{font-size:42px;}
+.school-banner h3{font-size:20px; color:#fff;}
+.school-banner p{color:var(--muted); font-size:13px; margin-top:2px;}
+
+/* Modal */
+.overlay{position:fixed; inset:0; background:rgba(0,0,0,.65); display:none; align-items:center; justify-content:center; z-index:100; padding:20px;}
+.overlay.open{display:flex;}
+.modal{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:24px; width:100%; max-width:480px; max-height:85vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,.6);}
+.modal h3{color:#fff; margin-bottom:16px; font-size:18px;}
+.field{margin-bottom:14px;}
+.field label{display:block; font-size:12px; color:var(--muted); margin-bottom:5px; text-transform:uppercase; letter-spacing:.5px;}
+.field input, .field textarea, .field select{
+  width:100%; background:var(--bg2); border:1px solid var(--border); border-radius:6px; padding:9px 10px;
+  color:var(--text); font-size:14px; font-family:inherit;
+}
+.field textarea{min-height:80px; resize:vertical;}
+.field input:focus, .field textarea:focus, .field select:focus{outline:none; border-color:var(--red);}
+.modal-actions{display:flex; justify-content:flex-end; gap:10px; margin-top:18px;}
+
+footer.foot{border-top:1px solid var(--border); padding:30px 24px; text-align:center; color:var(--muted); font-size:12px; position:relative; z-index:1;}
+footer.foot .btn{margin:0 4px;}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:10px; height:10px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border); border-radius:10px;}
+
+@media (max-width:800px){
+  .kanban{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="topbar">
+    <div class="brand">
+      <span class="logo">🩸</span>
+      <div>
+        <h1 class="noise-title">RE:GAME</h1>
+        <small>Hub d'organisation — projet Unity Horreur</small>
+      </div>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button class="btn ghost small" onclick="exportData()">⭳ Export</button>
+      <button class="btn ghost small" onclick="document.getElementById('importFile').click()">⭱ Import</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+    </div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-view="dashboard" class="active">📊 Dashboard</button>
+    <button data-view="mechanics">⚙️ Mécaniques</button>
+    <button data-view="maps">🗺️ Maps</button>
+    <button data-view="eggs">🥚 Easter Eggs</button>
+    <button data-view="kanban">📋 Tâches / Bugs</button>
+    <button data-view="team">👥 Équipe</button>
+    <button data-view="school">🏫 Bahut & Profs</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- DASHBOARD -->
+  <section class="view active" id="view-dashboard">
+    <div class="view-head">
+      <div>
+        <h2>Vue d'ensemble</h2>
+        <p>État global du projet RE:GAME — tout ce qui a été ajouté, en un coup d'œil.</p>
+      </div>
+    </div>
+    <div class="stats-grid" id="statsGrid"></div>
+    <div class="panel">
+      <h3>🕒 Dernières activités</h3>
+      <div id="recentActivity" class="empty-state">Rien pour l'instant — ajoute une mécanique, une map ou un easter egg !</div>
+    </div>
+    <div class="panel">
+      <h3>📌 Pense-bêtes rapides</h3>
+      <p style="color:var(--muted); font-size:13px; margin-bottom:10px;">Notes libres pour le groupe (idées en vrac, rappels, liens...).</p>
+      <textarea id="notesArea" style="width:100%; min-height:120px; background:var(--bg2); border:1px solid var(--border); border-radius:8px; color:var(--text); padding:12px; font-family:inherit; font-size:13px;" placeholder="Écris une note pour l'équipe ici, elle est sauvegardée automatiquement..." oninput="saveNotes()"></textarea>
+    </div>
+  </section>
+
+  <!-- MECHANICS -->
+  <section class="view" id="view-mechanics">
+    <div class="view-head">
+      <div>
+        <h2>Mécaniques de jeu</h2>
+        <p>Toutes les mécaniques d'horreur / gameplay : furtivité, inventaire, IA ennemie, puzzles, jumpscares...</p>
+      </div>
+      <button class="btn" onclick="openModal('mechanics')">+ Nouvelle mécanique</button>
+    </div>
+    <div class="cards-grid" id="grid-mechanics"></div>
+  </section>
+
+  <!-- MAPS -->
+  <section class="view" id="view-maps">
+    <div class="view-head">
+      <div>
+        <h2>Maps / Niveaux</h2>
+        <p>Toutes les zones et niveaux du jeu, avec leur état d'avancement.</p>
+      </div>
+      <button class="btn" onclick="openModal('maps')">+ Nouvelle map</button>
+    </div>
+    <div class="cards-grid" id="grid-maps"></div>
+  </section>
+
+  <!-- EASTER EGGS -->
+  <section class="view" id="view-eggs">
+    <div class="view-head">
+      <div>
+        <h2>Easter Eggs 🥚</h2>
+        <p>Secrets cachés dans le jeu. Note bien où ils se trouvent et comment les déclencher !</p>
+      </div>
+      <button class="btn" onclick="openModal('eggs')">+ Nouvel easter egg</button>
+    </div>
+    <div class="cards-grid" id="grid-eggs"></div>
+  </section>
+
+  <!-- KANBAN -->
+  <section class="view" id="view-kanban">
+    <div class="view-head">
+      <div>
+        <h2>Tâches & Bugs</h2>
+        <p>Organisation du travail en cours — glisse les cartes d'une colonne à l'autre via le menu déroulant.</p>
+      </div>
+      <button class="btn" onclick="openModal('tasks')">+ Nouvelle tâche</button>
+    </div>
+    <div class="kanban" id="kanbanBoard"></div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="view" id="view-team">
+    <div class="view-head">
+      <div>
+        <h2>Équipe du projet</h2>
+        <p>Qui fait quoi dans l'équipe de dev.</p>
+      </div>
+      <button class="btn" onclick="openModal('team')">+ Ajouter un membre</button>
+    </div>
+    <div class="cards-grid" id="grid-team"></div>
+  </section>
+
+  <!-- SCHOOL -->
+  <section class="view" id="view-school">
+    <div class="view-head">
+      <div>
+        <h2>Bahut & Professeurs</h2>
+        <p>Infos sur l'établissement et les profs encadrant / liés au projet.</p>
+      </div>
+      <button class="btn" onclick="openModal('profs')">+ Ajouter un prof</button>
+    </div>
+    <div class="school-banner">
+      <div class="emblem">🏫</div>
+      <div>
+        <h3 id="schoolName">Lycée Gustave Eiffel</h3>
+        <p>Établissement de référence du projet RE:GAME</p>
+      </div>
+    </div>
+    <div class="cards-grid" id="grid-profs"></div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div>RE:GAME — hub interne d'organisation. Projet Unity Horreur.</div>
+  <div style="margin-top:10px;">
+    <button class="btn ghost small" onclick="resetAll()">⚠️ Réinitialiser les données locales</button>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h3 id="modalTitle">Nouvel élément</h3>
+    <div id="modalFields"></div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn" onclick="saveModal()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
